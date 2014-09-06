@@ -1,8 +1,13 @@
-﻿using System.Collections.Generic;
-using Training.Workshop.Domain.Entities;
+﻿
 
 namespace Training.Workshop.Data.SQL
 {
+    using System.Collections.Generic;
+    using Training.Workshop.Domain.Entities;
+    using System;
+    using System.IO;
+    using System.Text;
+
     /// <summary>
     /// Fake repository for testing
     /// </summary>
@@ -16,8 +21,36 @@ namespace Training.Workshop.Data.SQL
         /// <param name="role">user roles</param>
         public bool SaveNewUser(string username, string password, string[] role)
         {
-            // TODO
-            // Need realization
+            var rand = new Random();
+
+            var salt = string.Empty;
+
+            byte[] hash;
+
+            var passwordwithsaltSHA = string.Empty;
+
+
+            for (int j = 0; j < rand.Next(8, 15); j++)
+            {
+                salt += Convert.ToChar(rand.Next(65, 90));
+            }
+
+            using (var sha1 = new System.Security.Cryptography.SHA1CryptoServiceProvider())
+            {
+                hash = sha1.ComputeHash(Encoding.Unicode.GetBytes(password + salt));
+            }
+            var stringbuilder = new StringBuilder();
+            foreach (byte b in hash)
+            {
+                stringbuilder.AppendFormat("{0:x2}", b);
+            }
+            passwordwithsaltSHA = stringbuilder.ToString();
+
+            using (var streamwriter = 
+                new StreamWriter(@"D:\Myproject_git\Bikeworkshop\Training.Workshop.Data.SQL\FakeUserData.txt", true))
+            {
+                streamwriter.WriteLine(username + " " + passwordwithsaltSHA + " " + salt);
+            }
             return true;
         }
 
@@ -27,8 +60,33 @@ namespace Training.Workshop.Data.SQL
         /// <param name="username"></param>
         public void DeleteUser(string username)
         {
-            // TODO
-            // Need realization
+            var listofusers = new List<string>();
+
+            // Read all data and delete strokes contains username
+            using (
+                var streamreader =
+                    new StreamReader(@"D:\Myproject_git\Bikeworkshop\Training.Workshop.Data.SQL\FakeUserData.txt"))
+            {
+                var line = string.Empty;
+
+                while ((line = streamreader.ReadLine()) != null)
+                {
+                    listofusers.Add(line);    
+                }
+
+                listofusers.RemoveAll(x => x.Contains(username));
+            }
+
+            // Overwriten data to file
+            using (var streamwriter = 
+                    new StreamWriter(@"D:\Myproject_git\Bikeworkshop\Training.Workshop.Data.SQL\FakeUserData.txt", false))
+            {
+                foreach (var el in listofusers)
+                {
+                    streamwriter.WriteLine(el);    
+                }
+                
+            }
         }
 
         /// <summary>

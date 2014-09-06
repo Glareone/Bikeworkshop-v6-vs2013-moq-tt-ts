@@ -59,7 +59,7 @@
                 }
                 passwordwithsaltSHA = stringbuilder.ToString();
 
-                string str = names[rand.Next(0, 49)] + " " + surnames[rand.Next(0, 49)] + " " + passwordwithsaltSHA + " " + salt;
+                string str =i + " " + names[rand.Next(0, 49)]+surnames[rand.Next(0, 49)] + " " + passwordwithsaltSHA + " " + salt;
 
                 WriteLine(str);
             }
