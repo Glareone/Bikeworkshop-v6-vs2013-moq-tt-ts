@@ -1,0 +1,30 @@
+﻿<#@ template debug="false" hostspecific="false" language="C#" #>
+<#@ assembly name = "System.Core" #>
+<#@ import namespace = "System.Linq" #>
+<#@ output extension=".txt" #>
+
+
+<#
+	string[] names = {"John","Bill","Alex","Christopher","Ada","Adalyn","Adele","Barney"
+				 	 ,"Becky","Brandon","Candi","Cate","Dale","Richard","Dyson","Emily"
+					 ,"Flora","Floyd","Graham","Hank","Eileen","James","Joshua","Kylie"
+					 ,"Laura","Madison","Miles","Morgana","Nelson","Patty","Phyllis"
+					 ,"Posy","Ralph","Rex","Ronald","Rudy","Saxon","Sharon","Shelley"
+					 ,"Sophia","Stewart","Thomas","Tricia","Vance","Warwick","William"
+					 ,"Yasmin","Selma","Zula","Zoe"};
+	
+	string[] surnames = {"Adamson","Adhock","Acker","Beckett","Bonner","Brooks","Causer"
+						,"Clayton","Cox","Cory","Curtis","Davidson","Dixon","Dyson","Ewart"
+						,"Forest","Foster","Garnett","Greene","Harlan","Hawk","Hayley","Hollins"
+						,"Howe","Jervis","Kersey","Kirby","Lockwood","Mathews","Merill","Moore"
+						,"Nash","Olson","Parish","Peak","Readdie","Rose","Savage","Sexton","Simmons"
+						,"Spear","Starr","Tailor","Thomas","Tifft","Tinker","Wallis","West","Woods","York"};
+	
+	var rand=new Random();
+
+	for(int i=0;i<5000;i++)
+	{
+		string str=names[rand.Next(0,49)]+" "+surnames[rand.Next(0,49)];
+		WriteLine(str);
+	}
+#>

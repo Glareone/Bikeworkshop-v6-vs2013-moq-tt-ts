@@ -1,0 +1,6 @@
+﻿CREATE TABLE [UserRole]
+(
+	UserRoleID int NOT NULL PRIMARY KEY IDENTITY(1,1), 
+	UserID int NOT NULL,
+	RoleID int NOT NULL
+)
