@@ -17,7 +17,7 @@ namespace Training.Workshop.Data.SQL
         {
             //TODO
             //rework with FakeUserRepository
-            return new UserRepository();
+            return new FakeUserRepository();
         }
         /// <summary>
         /// Fake repository factory for fake bike 
@@ -28,7 +28,7 @@ namespace Training.Workshop.Data.SQL
         {
             //TODO
             //rework with FakeBikeRepository
-            return new BikeRepository();
+            return new FakeBikeRepository();
         }
         /// <summary>
         /// Fake repository factory for Fake sparepart 
@@ -39,7 +39,7 @@ namespace Training.Workshop.Data.SQL
         {
             //TODO
             //rework with FakeSparepartRepository
-            return new SparepartRepository();
+            return new FakeSparepartRepository();
         }
     }
 }

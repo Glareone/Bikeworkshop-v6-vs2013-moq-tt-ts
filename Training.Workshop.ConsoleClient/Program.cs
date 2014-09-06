@@ -6,6 +6,7 @@ using Training.Workshop.Service;
 using Training.Workshop.Service.ServiceLocator;
 using Training.Workshop.Domain.Services;
 using System.Collections.Generic;
+using System.Text;
 
 namespace Training.Workshop.ConsoleClient
 {
@@ -14,6 +15,91 @@ namespace Training.Workshop.ConsoleClient
         static void Main(string[] args)
         {
 
+
+
+            string[] names = {"John","Bill","Alex","Christopher","Ada","Adalyn","Adele","Barney"
+				 	 ,"Becky","Brandon","Candi","Cate","Dale","Richard","Dyson","Emily"
+					 ,"Flora","Floyd","Graham","Hank","Eileen","James","Joshua","Kylie"
+					 ,"Laura","Madison","Miles","Morgana","Nelson","Patty","Phyllis"
+					 ,"Posy","Ralph","Rex","Ronald","Rudy","Saxon","Sharon","Shelley"
+					 ,"Sophia","Stewart","Thomas","Tricia","Vance","Warwick","William"
+					 ,"Yasmin","Selma","Zula","Zoe"};
+
+            string[] surnames = {"Adamson","Adhock","Acker","Beckett","Bonner","Brooks","Causer"
+						,"Clayton","Cox","Cory","Curtis","Davidson","Dixon","Dyson","Ewart"
+						,"Forest","Foster","Garnett","Greene","Harlan","Hawk","Hayley","Hollins"
+						,"Howe","Jervis","Kersey","Kirby","Lockwood","Mathews","Merill","Moore"
+						,"Nash","Olson","Parish","Peak","Readdie","Rose","Savage","Sexton","Simmons"
+						,"Spear","Starr","Tailor","Thomas","Tifft","Tinker","Wallis","West","Woods","York"};
+
+            var rand = new Random();
+
+
+
+
+
+            for (int i = 0; i < 50; i++)
+            {
+                string password = "";
+
+                string passwordwithsaltSHA = "";
+
+                string salt = "";
+
+                byte[] hash;
+
+                for (int k = 0; k < 20; k++)
+                {
+                    password += Convert.ToChar(rand.Next(65, 90));
+                }
+
+                for (int j = 0; j < rand.Next(8, 15); j++)
+                {
+                    salt += Convert.ToChar(rand.Next(65, 90));
+                }
+
+                using (var sha1 = new System.Security.Cryptography.SHA1CryptoServiceProvider())
+                {
+                    hash = sha1.ComputeHash(Encoding.Unicode.GetBytes(password + salt));
+                }
+                var stringbuilder = new StringBuilder();
+                foreach (byte b in hash)
+                {
+                    stringbuilder.AppendFormat("{0:x2}", b);
+                }
+                passwordwithsaltSHA = stringbuilder.ToString();
+
+                string str = names[rand.Next(0, 49)] + " " + surnames[rand.Next(0, 49)] + " " + passwordwithsaltSHA + " " + salt;
+
+                Console.WriteLine(str);
+            }
+            
+            
+            
+            
+            
+            
+            
+            
+            
+            
+            
+            
+            
+            
+            
+            
+            
+            
+            
+            
+            
+            
+            
+            
+            
+            
+            
             //Register Existing Services
             ServiceLocator.RegisterService<IUserService>(typeof(UserService));
 
