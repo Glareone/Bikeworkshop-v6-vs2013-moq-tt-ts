@@ -90,7 +90,7 @@ namespace Training.Workshop.Data.SQL
         }
 
         /// <summary>
-        /// Get all user information
+        /// Get user information
         /// </summary>
         /// <param name="username"></param>
         /// <param name="password"></param>

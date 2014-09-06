@@ -8,23 +8,37 @@ using System.Data.SqlClient;
 
 namespace Training.Workshop.Data.SQL
 {
+    /// <summary>
+    /// repository which works with user data
+    /// </summary>
     public class UserRepository : IUserRepository
     {
         /// <summary>
         /// Save User in SQL database
         /// </summary>
-        /// <param name="user"></param>
+        /// <param name="username">
+        /// The username.
+        /// </param>
+        /// <param name="password">
+        /// The password.
+        /// </param>
+        /// <param name="rolearray">
+        /// The rolearray.
+        /// </param>
+        /// <returns>
+        /// The <see cref="bool"/>.
+        /// </returns>
         public bool SaveNewUser(string username, string password, string[] rolearray)
         {
-            //Added user if username doesn't exist in database
+            // Added user if username doesn't exist in database
             if (CountUsersWithUsername(username) == 0)
             {
-                //Adding into User table
+                // Adding into User table
                 using (var unitofwork = (ISQLUnitOfWork)Training.Workshop.UnitOfWork.UnitOfWork.Start())
                 {
                     using (var command = unitofwork.Connection.CreateCommand())
                     {
-                        //Add new user if database do not have another user with this username
+                        // Add new user if database do not have another user with this username
                         var salt = GenerateSalt();
 
                         command.CommandText = "InsertUser";
@@ -36,11 +50,9 @@ namespace Training.Workshop.Data.SQL
 
                         command.Parameters.Clear();
 
-                        //Adding into UserRole table
+                        // Adding into UserRole table
                         foreach (var role in rolearray)
                         {
-                            //TODO
-                            //adding new userrole rows
                             command.CommandText = "InputintoUserRole";
                             command.CommandType = CommandType.StoredProcedure;
                             command.Parameters.AddWithValue("Username", username);
@@ -54,13 +66,14 @@ namespace Training.Workshop.Data.SQL
             }
             return false;
         }
+
         /// <summary>
         /// Delete all users with username from SQL Database
         /// </summary>
         /// <param name="username"></param>
         public void DeleteUser(string username)
         {
-            //Delete all user roles and user permissions.
+            // Delete all user roles and user permissions.
             using (var unitofwork = (ISQLUnitOfWork)Training.Workshop.UnitOfWork.UnitOfWork.Start())
             {
                 using (var command = unitofwork.Connection.CreateCommand())
@@ -71,7 +84,7 @@ namespace Training.Workshop.Data.SQL
                     command.ExecuteNonQuery();
                     command.Parameters.Clear();
 
-                    //Deleting user from database
+                    // Deleting user from database
                     command.CommandText = "DeleteUser";
                     command.CommandType = CommandType.StoredProcedure;
                     command.Parameters.AddWithValue("Username", username);
@@ -79,17 +92,23 @@ namespace Training.Workshop.Data.SQL
                 }
             }
         }
+
         /// <summary>
         /// Search and return user if he exist in database,with all his roles and permissions.
         /// </summary>
-        /// <param name="username"></param>
-        /// <param name="password"></param>
+        /// <param name="username">
+        /// </param>
+        /// <param name="password">
+        /// </param>
+        /// <returns>
+        /// The <see cref="User"/>.
+        /// </returns>
         public User GetUser(string username, string password)
         {
             var user = new User();
-            string saltfromdatabase;
-            string enteredPasswordwithSaltHash;
-            //take salt from database by username and generate SHA hash from entered password and salt
+            
+
+            // Take salt from database by username and generate SHA hash from entered password and salt
             using (var unitofwork = (ISQLUnitOfWork)Training.Workshop.UnitOfWork.UnitOfWork.Start())
             {
 
@@ -97,12 +116,12 @@ namespace Training.Workshop.Data.SQL
                 {
                     var salt = new SqlParameter("salt", SqlDbType.VarChar);
 
-                    //add Value to search by username
+                    // Add Value to search by username
                     command.CommandText = "TakeSaltbyUserName";
                     command.CommandType = CommandType.StoredProcedure;
                     command.Parameters.AddWithValue("username", username);
-                    //add values to output data from database
-
+                    
+                    // Add values to output data from database
                     salt.Direction = ParameterDirection.Output;
                     salt.Size = 15;
 
@@ -110,9 +129,11 @@ namespace Training.Workshop.Data.SQL
 
                     command.ExecuteNonQuery();
 
-                    saltfromdatabase = command.Parameters["salt"].Value.ToString();
-                    enteredPasswordwithSaltHash = GenerateSHAHashFromPasswordWithSalt(password, saltfromdatabase);
-                    //clear parameters for new procedure
+                    string saltfromdatabase = command.Parameters["salt"].Value.ToString();
+
+                    string enteredPasswordwithSaltHash = GenerateSHAHashFromPasswordWithSalt(password, saltfromdatabase);
+                    
+                    // Clear parameters for new procedure
                     command.Parameters.Clear();
 
                     command.CommandText = "CheckPasswordAndReturnUsername";
@@ -125,21 +146,21 @@ namespace Training.Workshop.Data.SQL
                     correctusername.Size = 50;
                     command.Parameters.Add(correctusername);
                     command.ExecuteNonQuery();
-                    //Construct User
+                    
+                    // Construct User
                     user.Username = command.Parameters["correctusername"].Value.ToString();
 
                 }
             }
-            //return filled user if username and password is correct
-            //return empty user if user does not exist in database
             user.Roles = GetRolesandPermissionsbyUsername(user.Username);
             return user;
         }
+
         /// <summary>
         /// Function returns Count of Users with this username
         /// </summary>
         /// <param name="username"></param>
-        /// <returns></returns>
+        /// <returns> user ID </returns>
         public int CountUsersWithUsername(string username)
         {
             using (var unitofwork = (ISQLUnitOfWork)Training.Workshop.UnitOfWork.UnitOfWork.Start())
@@ -156,17 +177,20 @@ namespace Training.Workshop.Data.SQL
                     command.Parameters.Add(countParameter);
                     command.ExecuteNonQuery();
 
-                    int count = Int32.Parse(command.Parameters["@UserWithUsernameCount"].Value.ToString());
+                    int count = int.Parse(command.Parameters["@UserWithUsernameCount"].Value.ToString());
 
                     return count;
                 }
             }
         }
+
         /// <summary>
         /// Get all permissions that role has.
         /// </summary>
-        /// <param name="rolename"></param>
-        /// <returns></returns>
+        /// <param name="rolename">
+        /// the user's rolename
+        /// </param>
+        /// <returns>List of permissions</returns>
         public List<string> GetPermissionsbyRolename(string rolename)
         {
             var Permissionlist = new List<string>();
@@ -175,19 +199,20 @@ namespace Training.Workshop.Data.SQL
             {
                 using (var command = unitofwork.Connection.CreateCommand())
                 {
-                    //Configure parameters
-                    var Permission = new SqlParameter("Permissionname", SqlDbType.VarChar);
+                    // Configure parameters
+                    var permission = new SqlParameter("Permissionname", SqlDbType.VarChar);
 
-                    Permission.Direction = ParameterDirection.Output;
-                    Permission.Size = 50;
+                    permission.Direction = ParameterDirection.Output;
+                    permission.Size = 50;
 
                     command.CommandText = "RetrievePermissionbyRolename";
                     command.CommandType = CommandType.StoredProcedure;
                     command.Parameters.AddWithValue("Rolename", rolename);
-                    command.Parameters.Add(Permission);
+                    command.Parameters.Add(permission);
 
                     var reader = command.ExecuteReader();
-                    //take all permissions from database to list
+                    
+                    // Take all permissions from database to list
                     while (reader.Read())
                     {
                         Permissionlist.Add(reader["Permissionname"].ToString());
@@ -196,11 +221,14 @@ namespace Training.Workshop.Data.SQL
             }
             return Permissionlist;
         }
+
         /// <summary>
         /// return all role names which user with username obtained
         /// </summary>
-        /// <param name="roles"></param>
-        /// <returns></returns>
+        /// <param name="username">
+        /// username
+        /// </param>
+        /// <returns>list of rolenames</returns>
         public List<string> GetRoleNamesByUsername(string username)
         {
             var rolenamelist = new List<string>();
@@ -209,11 +237,11 @@ namespace Training.Workshop.Data.SQL
             {
                 using (var command = unitofwork.Connection.CreateCommand())
                 {
-                    var Rolename = new SqlParameter("@Rolename", SqlDbType.VarChar);
+                    var rolename = new SqlParameter("@Rolename", SqlDbType.VarChar);
 
-                    Rolename.Direction = ParameterDirection.Output;
-                    Rolename.Size = 50;
-                    command.Parameters.Add(Rolename);
+                    rolename.Direction = ParameterDirection.Output;
+                    rolename.Size = 50;
+                    command.Parameters.Add(rolename);
 
                     command.CommandText = "RetrieveRolesbyUsername";
                     command.CommandType = CommandType.StoredProcedure;
@@ -229,18 +257,21 @@ namespace Training.Workshop.Data.SQL
             }
             return rolenamelist;
         }
+
         /// <summary>
         /// return all obtained User Roles by username and fill it by permissions,return List of Roles with all permissions.
         /// </summary>
-        /// <param name="username"></param>
-        /// <returns></returns>
+        /// <param name="username">
+        /// username
+        /// </param>
+        /// <returns>list of user roles</returns>
         public List<Role> GetRolesandPermissionsbyUsername(string username)
         {
-            List<string> RoleNamesListwhichUserhas = Data.Context.Current.RepositoryFactory.GetUserRepository().GetRoleNamesByUsername(username);
+            List<string> roleNamesListwhichUserhas = Data.Context.Current.RepositoryFactory.GetUserRepository().GetRoleNamesByUsername(username);
 
             var RoleList = new List<Role>();
 
-            foreach (var role in RoleNamesListwhichUserhas)
+            foreach (var role in roleNamesListwhichUserhas)
             {
                 var Role = new Role()
                 {
@@ -252,17 +283,18 @@ namespace Training.Workshop.Data.SQL
 
             return RoleList;
         }
+
         /// <summary>
         /// return all users from database with permissions and roles
         /// </summary>
-        /// <returns></returns>
+        /// <returns>list of users</returns>
         public List<User> GetAllUsers()
         {
-
             var listofusernames = new List<string>();
 
             var listofusers = new List<User>();
-            //return all usernames
+            
+            // Return all usernames
             using (var unitofwork = (ISQLUnitOfWork)Training.Workshop.UnitOfWork.UnitOfWork.Start())
             {
                 using (var command = unitofwork.Connection.CreateCommand())
@@ -278,7 +310,8 @@ namespace Training.Workshop.Data.SQL
                     }
                 }
             }
-            //take all roles by usernames and construct list of users with userroles
+
+            // Take all roles by usernames and construct list of users with userroles
             foreach (var username in listofusernames)
             {
                 var user = new User()
@@ -291,11 +324,14 @@ namespace Training.Workshop.Data.SQL
 
             return listofusers;
         }
+
         /// <summary>
         /// return userid by username. this method used when bike creating with ownerID field
         /// </summary>
-        /// <param name="username"></param>
-        /// <returns></returns>
+        /// <param name="username">
+        /// username
+        /// </param>
+        /// <returns>returns user ID</returns>
         public int GetUserIDbyUsername(string username)
         {
             int userid = 0;
@@ -312,10 +348,11 @@ namespace Training.Workshop.Data.SQL
                     command.Parameters.Add(userID);
 
                     command.ExecuteNonQuery();
-                    //If owner with username exist in database return UserId, else return 0
-                    if (command.Parameters["userID"].Value.ToString() != "")
+                    
+                    // If owner with username exist in database return UserId, else return 0
+                    if (command.Parameters["userID"].Value.ToString() != string.Empty)
                     {
-                        userid = Int32.Parse(command.Parameters["userID"].Value.ToString());
+                        userid = int.Parse(command.Parameters["userID"].Value.ToString());
                     }
 
                 }
@@ -326,28 +363,33 @@ namespace Training.Workshop.Data.SQL
         /// <summary>
         /// Generate Salt. Function,that works with user creating.
         /// </summary>
-        /// <returns></returns>
+        /// <returns>returns salt based on string format</returns>
         private string GenerateSalt()
         {
-            string salt = "";
+            var salt = string.Empty;
 
-            //Create salt with random lenght
+            // Create salt with random lenght
             var rnd = new Random();
 
             for (int i = 0; i < rnd.Next(8, 15); i++)
             {
-                //Take random char from eng alphabet and push to string salt
+                // Take random char from eng alphabet and push to string salt
                 salt += Convert.ToChar(64 + rnd.Next(1, 26));
             }
             return salt;
         }
+
         /// <summary>
         /// Generate new SHA-hash using user password and salt.
         /// Used when user creating or when userpassword checking.
         /// </summary>
-        /// <param name="password"></param>
-        /// <param name="salt"></param>
-        /// <returns></returns>
+        /// <param name="password">
+        /// userpassword
+        /// </param>
+        /// <param name="salt">
+        /// salt for encryption
+        /// </param>
+        /// <returns>returns coded password with salt</returns>
         private string GenerateSHAHashFromPasswordWithSalt(string password, string salt)
         {
 
@@ -367,11 +409,12 @@ namespace Training.Workshop.Data.SQL
 
             return stringbuilder.ToString();
         }
+
         /// <summary>
         /// Returns all users with permissions and roles.
         /// New method works with 1 stored procedure.
         /// </summary>
-        /// <returns></returns>
+        /// <returns>returns list of users</returns>
         public List<User> RetrieveAllUsers()
         {
             var listofusers = new List<User>();
@@ -386,22 +429,27 @@ namespace Training.Workshop.Data.SQL
 
                     using (IDataReader reader = command.ExecuteReader())
                     {
-                        //UserID,Username
+                        // UserID, Username
                         List<Tuple<string, string>> userlist = GetUser(reader);
 
                         if (!reader.NextResult())
+                        {
                             throw new InvalidOperationException("Cant execute SELECT ROLES");
-                        //UserID,RoleID,RoleName
+                        }
+                        
+                        // UserID, RoleID, RoleName
                         List<Tuple<string, string, string>> roleslist = GetRoles(reader);
 
                         if (!reader.NextResult())
+                        {
                             throw new InvalidOperationException("Cant execute SELECT PERMISSIONS");
-
+                        }
+                        
                         // Get Permissions by username
                         List<Tuple<string, string, string>> permissionslist = GetPermissions(reader);
                         reader.Close();
 
-                        //filled user fields before return.
+                        // Filled user fields before return.
                         foreach (var userelement in userlist)
                         {
                             var newuser = new User();
@@ -423,7 +471,7 @@ namespace Training.Workshop.Data.SQL
 
                                     foreach (var permissionelement in permissionslist)
                                     {
-                                        //if permission relates to role-adding permission to list belongs to role.
+                                        // If permission relates to role-adding permission to list belongs to role.
                                         if (roleelement.Item2 == permissionelement.Item2)
                                         {
                                             {
@@ -431,9 +479,11 @@ namespace Training.Workshop.Data.SQL
                                             }
                                         }
                                     }
-                                    //adding all permissions to role
+
+                                    // Adding all permissions to role
                                     role.Permissions = Permissionlist;
-                                    //adding role to role list of user
+                                    
+                                    // Adding role to role list of user
                                     rolelist.Add(role);
                                 }
 
@@ -457,11 +507,13 @@ namespace Training.Workshop.Data.SQL
         /// <summary>
         /// Get User with roles and permissions by one stored procedure
         /// </summary>
-        /// <param name="username"></param>
-        /// <returns></returns>
+        /// <param name="username">
+        /// username
+        /// </param>
+        /// <returns>User</returns>
         public User RetrieveUser(string username)
         {
-            //User Construction
+            // User Construction
             var user = new User();
 
             using (var unitofwork = (ISQLUnitOfWork)Training.Workshop.UnitOfWork.UnitOfWork.Start())
@@ -474,26 +526,32 @@ namespace Training.Workshop.Data.SQL
 
                     using (IDataReader reader = command.ExecuteReader())
                     {
-                        //UserID,Username
+                        // UserID,Username
                         List<Tuple<string, string>> userlist = GetUser(reader);
-                        //to search roles and permissions by userID
+                        
+                        // To search roles and permissions by userID
                         string userID = userlist[0].Item1;
 
                         if (!reader.NextResult())
+                        {
                             throw new InvalidOperationException("Cant execute SELECT ROLES");
-                        //UserID,RoleID,RoleName
+                        }
+                        
+                        // UserID,RoleID,RoleName
                         List<Tuple<string, string, string>> roleslist = GetRoles(reader, userID);
 
                         if (!reader.NextResult())
+                        {
                             throw new InvalidOperationException("Cant execute SELECT PERMISSIONS");
-
+                        }
+                        
                         // Get Permissions by username
-                        //UserID,RoleID,Permission
+                        // UserID,RoleID,Permission
                         List<Tuple<string, string, string>> permissionslist = GetPermissions(reader, userID);
                         reader.Close();
 
 
-                        //filled user role and permissions before return.
+                        // Filled user role and permissions before return.
                         user.Username = username;
 
                         var rolelist = new List<Role>();
@@ -508,15 +566,17 @@ namespace Training.Workshop.Data.SQL
 
                             foreach (var permissionelement in permissionslist)
                             {
-                                //if permission relates to role-adding permission to list belongs to role.
+                                // If permission relates to role-adding permission to list belongs to role.
                                 if (roleelement.Item2.ToString() == permissionelement.Item2.ToString())
                                 {
                                     Permissionlist.Add(permissionelement.Item3.ToString());
                                 }
                             }
-                            //adding all permissions to role
+
+                            // Adding all permissions to role
                             role.Permissions = Permissionlist;
-                            //adding role to role list of user
+                            
+                            // Adding role to role list of user
                             rolelist.Add(role);
 
                         }
@@ -526,12 +586,19 @@ namespace Training.Workshop.Data.SQL
             }
             return user;
         }
+
         /// <summary>
         /// Get user roles by userID. Used by RetrieveUser(string username) method
         /// </summary>
-        /// <param name="?"></param>
-        /// <returns></returns>
-        public List<Tuple<string, string, string>> GetRoles(IDataReader reader, string userID)
+        /// <param name="reader">
+        /// The reader.
+        /// </param>
+        /// <param name="userID">
+        /// </param>
+        /// <returns>
+        /// list of : UserID,RoleID,Rolename
+        /// </returns>
+        private List<Tuple<string, string, string>> GetRoles(IDataReader reader, string userID)
         {
             var tableofroles = new List<Tuple<string, string, string>>();
 
@@ -552,11 +619,18 @@ namespace Training.Workshop.Data.SQL
             }
             return tableofroles;
         }
+
         /// <summary>
         /// Get user permissions by userID. Used from RetrieveUser(string username)
         /// </summary>
-        /// <param name="reader"></param>
-        /// <returns></returns>
+        /// <param name="reader">
+        /// </param>
+        /// <param name="userID">
+        /// The user ID.
+        /// </param>
+        /// <returns>
+        /// list of UserID,RoleID,Permissionname
+        /// </returns>
         public List<Tuple<string, string, string>> GetPermissions(IDataReader reader, string userID)
         {
             var tableofpermissions = new List<Tuple<string, string, string>>();
@@ -567,17 +641,18 @@ namespace Training.Workshop.Data.SQL
 
                 if (getuserIDfromdb == userID)
                 {
-                    var PermissionElement = new Tuple<string, string, string>(
+                    var permissionElement = new Tuple<string, string, string>(
                             reader["UserID"].ToString(),
                             reader["RoleID"].ToString(),
                             reader["Permissionname"].ToString());
 
-                    tableofpermissions.Add(PermissionElement);
+                    tableofpermissions.Add(permissionElement);
                 }
 
             }
             return tableofpermissions;
         }
+
         /// <summary>
         /// Ger user roles. Userd by RetrieveAllUsers() method
         /// </summary>
@@ -589,16 +664,17 @@ namespace Training.Workshop.Data.SQL
 
             while (reader.Read())
             {
-                var RoleElement = new Tuple<string, string, string>(
+                var roleElement = new Tuple<string, string, string>(
                        reader["UserID"].ToString(),
                        reader["RoleID"].ToString(),
                        reader["RoleName"].ToString());
 
-                tableofroles.Add(RoleElement);
+                tableofroles.Add(roleElement);
 
             }
             return tableofroles;
         }
+
         /// <summary>
         /// Get user permissions. Used by RetrieveAllUsers() method
         /// </summary>
@@ -610,15 +686,16 @@ namespace Training.Workshop.Data.SQL
 
             while (reader.Read())
             {
-                var PermissionElement = new Tuple<string, string, string>(
+                var permissionElement = new Tuple<string, string, string>(
                         reader["UserID"].ToString(),
                         reader["RoleID"].ToString(),
                         reader["Permissionname"].ToString());
 
-                tableofpermissions.Add(PermissionElement);
+                tableofpermissions.Add(permissionElement);
             }
-            return tableofpermissions;
+        return tableofpermissions;
         }
+
         /// <summary>
         /// Get User by username. Used by RetrieveAllUsers() method
         /// </summary>
@@ -630,14 +707,13 @@ namespace Training.Workshop.Data.SQL
 
             while (reader.Read())
             {
-                var UserElement = new Tuple<string, string>(
+                var userElement = new Tuple<string, string>(
                     reader["UserID"].ToString(),
                     reader["Username"].ToString());
 
-                tableofusers.Add(UserElement);
+                tableofusers.Add(userElement);
             }
             return tableofusers;
         }
-
     }
 }

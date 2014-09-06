@@ -101,6 +101,10 @@
       <Generator>TextTemplatingFileGenerator</Generator>
       <LastGenOutput>FakeUserData.txt</LastGenOutput>
     </None>
+    <None Include="FakeUserData2.tt">
+      <Generator>TextTemplatingFileGenerator</Generator>
+      <LastGenOutput>FakeUserData2.txt</LastGenOutput>
+    </None>
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
@@ -121,6 +125,11 @@
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
       <DependentUpon>FakeUserData.tt</DependentUpon>
+    </Content>
+    <Content Include="FakeUserData2.txt">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>FakeUserData2.tt</DependentUpon>
     </Content>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
