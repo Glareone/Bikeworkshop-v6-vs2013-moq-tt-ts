@@ -1,13 +1,15 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using Training.Workshop.Domain.Entities;
-using Training.Workshop.Data.SQL.SQLSystemUnitOfWork;
-using System.Data;
-using System.Data.SqlClient;
+﻿
 
 namespace Training.Workshop.Data.SQL
 {
+    using System;
+    using System.Collections.Generic;
+    using System.Data;
+    using System.Data.SqlClient;
+    using System.Text;
+    using Training.Workshop.Data.SQL.SQLSystemUnitOfWork;
+    using Training.Workshop.Domain.Entities;
+
     /// <summary>
     /// repository which works with user data
     /// </summary>
