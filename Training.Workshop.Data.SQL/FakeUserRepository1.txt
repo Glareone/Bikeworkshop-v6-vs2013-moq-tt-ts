@@ -1,0 +1,114 @@
+﻿
+
+ HEY,HEY,HEY! I see data1
+ HEY,HEY,HEY! I see data2
+ HEY,HEY,HEY! I see data3
+ HEY,HEY,HEY! I see data4
+ HEY,HEY,HEY! I see data5
+
+data1data2data3data4
+
+54
+
+
+
+            
+            ///<summary></summary>
+            ///
+            ///
+            Partial class UserRepository:IUserRepository
+            {
+                public User(string data) 
+                {
+                    this.data=data;
+                }
+            }
+                    
+            ///<summary></summary>
+            ///
+            ///
+            Partial class UserRepository:IBikeRepository
+            {
+                public User(string data) 
+                {
+                    this.data=data;
+                }
+            }
+                    
+            ///<summary></summary>
+            ///
+            ///
+            Partial class UserRepository:ISparepartRepository
+            {
+                public User(string data) 
+                {
+                    this.data=data;
+                }
+            }
+                    
+            ///<summary></summary>
+            ///
+            ///
+            Partial class BikeRepository:IUserRepository
+            {
+                public Bike(string data) 
+                {
+                    this.data=data;
+                }
+            }
+                    
+            ///<summary></summary>
+            ///
+            ///
+            Partial class BikeRepository:IBikeRepository
+            {
+                public Bike(string data) 
+                {
+                    this.data=data;
+                }
+            }
+                    
+            ///<summary></summary>
+            ///
+            ///
+            Partial class BikeRepository:ISparepartRepository
+            {
+                public Bike(string data) 
+                {
+                    this.data=data;
+                }
+            }
+                    
+            ///<summary></summary>
+            ///
+            ///
+            Partial class SparepartRepository:IUserRepository
+            {
+                public Sparepart(string data) 
+                {
+                    this.data=data;
+                }
+            }
+                    
+            ///<summary></summary>
+            ///
+            ///
+            Partial class SparepartRepository:IBikeRepository
+            {
+                public Sparepart(string data) 
+                {
+                    this.data=data;
+                }
+            }
+                    
+            ///<summary></summary>
+            ///
+            ///
+            Partial class SparepartRepository:ISparepartRepository
+            {
+                public Sparepart(string data) 
+                {
+                    this.data=data;
+                }
+            }
+        

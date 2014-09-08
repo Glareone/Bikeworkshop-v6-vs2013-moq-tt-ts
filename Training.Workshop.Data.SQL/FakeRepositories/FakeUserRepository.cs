@@ -130,20 +130,25 @@ namespace Training.Workshop.Data.SQL
         /// <summary>
         /// returns all permissions for 1 role
         /// </summary>
-        /// <param name="rolename"></param>
+        /// <param name="rolename">
+        /// rolename which user has
+        /// </param>
         /// <returns></returns>
         public List<string> GetPermissionsbyRolename(string rolename)
         {
-            //TODO
-            //need realization
+            // TODO
+            // need realization
             return new List<string>();
         }
 
         /// <summary>
         /// return all role names which user obtained
         /// </summary>
-        /// <param name="roles"></param>
-        /// <returns></returns>
+        /// <param name="username">
+        /// The username.
+        /// </param>
+        /// <returns>
+        /// </returns>
         public List<string> GetRoleNamesByUsername(string username)
         {
             //TODO
@@ -184,6 +189,25 @@ namespace Training.Workshop.Data.SQL
             //TODO
             //need realization
             return new int();
+        }
+
+        private List<string> GetFakeUsers(int count)
+        {
+            var listoffakeusers = new List<string>();
+
+            using (var streamreader = new StreamReader(@"D:\Myproject_git\Bikeworkshop\Training.Workshop.Data.SQL\FakeUserData.txt"))
+            {                
+                var line = string.Empty;
+
+                for (int i = 0; i < count; i++)
+                {                    
+                    if ((line = streamreader.ReadLine()) != null)
+                    {
+                      listoffakeusers.Add(line);
+                    }
+                }   
+            }
+            return listoffakeusers;
         }
 
     }

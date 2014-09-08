@@ -1,0 +1,60 @@
+﻿<#@ template debug="false" hostspecific="false" language="C#" #>
+<#@ assembly name="System.Core" #>
+<#@ import namespace="System.Linq" #>
+<#@ import namespace="System.Text" #>
+<#@ import namespace="System.Collections.Generic" #>
+<#@ output extension=".txt" #>
+
+<#
+    var listofsomething= new List<string>();
+    listofsomething.Add("data1");
+    listofsomething.Add("data2");
+    listofsomething.Add("data3");
+    listofsomething.Add("data4");
+    listofsomething.Add("data5");
+#>
+
+<#
+    foreach(var el in listofsomething)
+    {
+        #> HEY,HEY,HEY! I see <#        WriteLine(el);
+    }  
+
+#>
+
+<#= 
+listofsomething[0]+listofsomething[1]+listofsomething[2]+listofsomething[3]
+#>
+
+<#=
+    2+3+4+5+6+7+8+9+10
+ #>
+
+
+<#
+    var listofclasses=new List<string>(){"User","Bike","Sparepart" };
+    
+    var listofinterfaces=new List<string>(){"IUserRepository","IBikeRepository","ISparepartRepository"};
+#>
+
+<#
+    foreach(var ElementofClasses in listofclasses)
+    {
+        foreach(var ElementofInterfaces in listofinterfaces)
+        {
+        #>
+            
+            ///<summary></summary>
+            ///
+            ///
+            Partial class <#=ElementofClasses #>Repository:<#=ElementofInterfaces#>
+            {
+                public <#=ElementofClasses #>(string data) 
+                {
+                    this.data=data;
+                }
+            }
+        <# 
+        }  
+    }   
+#>
