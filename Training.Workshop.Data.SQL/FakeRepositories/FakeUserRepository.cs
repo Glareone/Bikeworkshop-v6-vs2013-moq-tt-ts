@@ -163,8 +163,8 @@ namespace Training.Workshop.Data.SQL
         /// <returns></returns>
         public List<Role> GetRolesandPermissionsbyUsername(string username)
         {
-            //TODO
-            //need realization
+            // TODO
+            // need realization
             return new List<Role>();
         }
 
@@ -174,8 +174,8 @@ namespace Training.Workshop.Data.SQL
         /// <returns></returns>
         public List<User> GetAllUsers()
         {
-            //TODO
-            //need realization
+            // TODO
+            // need realization
             return new List<User>();
         }
 
@@ -186,8 +186,8 @@ namespace Training.Workshop.Data.SQL
         /// <returns></returns>
         public int GetUserIDbyUsername(string username)
         {
-            //TODO
-            //need realization
+            // TODO
+            // need realization
             return new int();
         }
 
@@ -195,7 +195,7 @@ namespace Training.Workshop.Data.SQL
         {
             var listoffakeusers = new List<string>();
 
-            using (var streamreader = new StreamReader(@"D:\Myproject_git\Bikeworkshop\Training.Workshop.Data.SQL\FakeUserData.txt"))
+            using (var streamreader = new StreamReader(@"D:\Myproject_git\Bikeworkshop\Training.Workshop.Data.SQL\FakeUserData2.txt"))
             {                
                 var line = string.Empty;
 

@@ -85,6 +85,11 @@
     <Compile Include="SQLSystemUnitofWork\ISQLUnitOfWork.cs" />
     <Compile Include="SQLSystemUnitofWork\SQLSystemDatabaseUnitOfWork.cs" />
     <Compile Include="SQLSystemUnitofWork\SQLSystemDatabaseUnitofWorkFactory.cs" />
+    <Compile Include="UserDataWorkflow.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>UserDataWorkflow.tt</DependentUpon>
+    </Compile>
     <Compile Include="UserRepository.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -97,6 +102,10 @@
       <Generator>TextTemplatingFileGenerator</Generator>
       <LastGenOutput>FakeSparepartData.txt</LastGenOutput>
     </None>
+    <None Include="FakeUserRepository1.tt">
+      <Generator>TextTemplatingFileGenerator</Generator>
+      <LastGenOutput>FakeUserRepository1.txt</LastGenOutput>
+    </None>
     <None Include="FakeUserData.tt">
       <Generator>TextTemplatingFileGenerator</Generator>
       <LastGenOutput>FakeUserData.txt</LastGenOutput>
@@ -106,6 +115,14 @@
       <LastGenOutput>FakeUserData2.txt</LastGenOutput>
     </None>
     <None Include="packages.config" />
+    <None Include="UserDataWorkflow.tt">
+      <Generator>TextTemplatingFileGenerator</Generator>
+      <LastGenOutput>UserDataWorkflow.cs</LastGenOutput>
+    </None>
+    <None Include="UserGenerator.tt">
+      <Generator>TextTemplatingFileGenerator</Generator>
+      <LastGenOutput>UserGenerator.txt</LastGenOutput>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <Service Include="{508349B6-6B84-4DF5-91F0-309BEEBAD82D}" />
@@ -121,6 +138,11 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>FakeSparepartData.tt</DependentUpon>
     </Content>
+    <Content Include="FakeUserRepository1.txt">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>FakeUserRepository1.tt</DependentUpon>
+    </Content>
     <Content Include="FakeUserData.txt">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
@@ -130,6 +152,11 @@
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
       <DependentUpon>FakeUserData2.tt</DependentUpon>
+    </Content>
+    <Content Include="UserGenerator.txt">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>UserGenerator.tt</DependentUpon>
     </Content>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

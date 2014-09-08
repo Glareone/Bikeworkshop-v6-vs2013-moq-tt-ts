@@ -1,0 +1,53 @@
+﻿<#@ template debug="false" hostspecific="false" language="C#" #>
+<#@ assembly name = "System.Core" #>
+<#@ assembly name = "System.Data" #>
+<#@ import namespace = "System.Collections.Generic"#>
+<#@ output extension=".txt" #>
+
+<#+
+
+public static class FakeUser
+{
+    private static readonly string[] names = {"John","Bill","Alex","Christopher","Ada","Adalyn","Adele","Barney"
+				 	 ,"Becky","Brandon","Candi","Cate","Dale","Richard","Dyson","Emily"
+					 ,"Flora","Floyd","Graham","Hank","Eileen","James","Joshua","Kylie"
+					 ,"Laura","Madison","Miles","Morgana","Nelson","Patty","Phyllis"
+					 ,"Posy","Ralph","Rex","Ronald","Rudy","Saxon","Sharon","Shelley"
+					 ,"Sophia","Stewart","Thomas","Tricia","Vance","Warwick","William"
+					 ,"Yasmin","Selma","Zula","Zoe"};
+
+    private static readonly string[] surnames = {"Adamson","Adhock","Acker","Beckett","Bonner","Brooks","Causer"
+			        ,"Clayton","Cox","Cory","Curtis","Davidson","Dixon","Dyson","Ewart"
+			        ,"Forest","Foster","Garnett","Greene","Harlan","Hawk","Hayley","Hollins"
+					,"Howe","Jervis","Kersey","Kirby","Lockwood","Mathews","Merill","Moore"
+					,"Nash","Olson","Parish","Peak","Readdie","Rose","Savage","Sexton","Simmons"
+					,"Spear","Starr","Tailor","Thomas","Tifft","Tinker","Wallis","West","Woods","York"};
+
+    private static readonly Random Rand = new Random();
+    
+    public static string GetName 
+    {
+            get { return names[Rand.Next(0,names.Length)];}
+    }
+    
+    public static string GetSurname
+    {
+            get { return surnames[Rand.Next(0,surnames.Length)];}
+    }
+
+    public static List<Tuple<string,string>> GetListofNamesandSurnames(int count)
+    {
+            var listofusers = new List<Tuple<string,string>>();
+
+            for(int i = 0; i < count; i++)
+            {
+                var newuser = new Tuple<string,string>( names[Rand.Next(0,names.Length)],surnames[Rand.Next(0,surnames.Length)] );
+                
+                listofusers.Add(newuser);
+            }
+            return listofusers;
+    }
+}
+
+#>
+
